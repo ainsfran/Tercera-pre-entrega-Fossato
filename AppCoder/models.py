@@ -1,18 +1,18 @@
 from django.db import models
 
 # Create your models here.
-class curso(models.Model):
+class hospedaje(models.Model):
+    
     nombre=models.CharField(max_length=40)
-    camada=models.IntegerField()
+    HabDispo=models.IntegerField()
 
-class estudiante(models.Model):
+class huesped(models.Model):
     nombre= models.CharField(max_length=30)
     apellido= models.CharField(max_length=30)
     email= models.EmailField()
 
-class entregable(models.Model):
+class reserva(models.Model):
     nombre=models.CharField(max_length=30)
-    fechaDeEntrega= models.DateField()
-    entregado= models.BooleanField()
+    fechaDeEntrada= models.DateField()
+    pagado= models.BooleanField()
 
-    

@@ -4,6 +4,11 @@ from django.http import HttpResponse
 from AppCoder.forms import hospedajeFormulario
 from AppCoder.forms import huespedFormulario
 from AppCoder.forms import reservaFormulario
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+
 
 
 # Create your views here
@@ -91,3 +96,61 @@ def buscar(request):
       respuesta= "no enviaste datos."
     
    return HttpResponse(respuesta)
+
+#CRUD leer
+
+def leerHospedaje(request):
+   Hospedaje=hospedaje.objects.all()
+   contexto = {"hospedaje":Hospedaje}
+   return render (request,"leerHospedaje.html",contexto)
+
+def eliminarHospedaje(request,hospedaje_nombre):
+   Hospedaje= hospedaje.objects.get(nombre=hospedaje_nombre)
+   Hospedaje.delete()
+   Hospedaje_1= hospedaje.objects.all()
+   contexto= {"Hospedajes": Hospedaje_1}
+   return render(request,"leerHospedaje.html",contexto)
+
+def editarHospedaje(request, hospedaje_nombre):
+   Hospedaje= hospedaje.objects.get(nombre=hospedaje_nombre)
+   if request.method == 'POST':
+      miFormulario= hospedajeFormulario(request.POST)
+      print(miFormulario)
+      if miFormulario.is_valid:
+         informacion=miFormulario.cleaned_data
+         Hospedaje.nombre= informacion['nombre']
+         Hospedaje.HabDispo=informacion['HabDispo']
+
+         Hospedaje.save()
+         return render(request,"inicio.html")
+      
+   else:
+      miFormilario= hospedajeFormulario(initial={'nombre': Hospedaje.nombre,'HabDispo': Hospedaje.HabDispo })
+      return render(request,'editarHospedaje.html',{'miFormulario':miFormilario, "hospedaje_nombre":hospedaje_nombre} )
+
+
+class HospedajeList(ListView):
+   
+   model= hospedaje
+   template_mame = "hospedaje_list.html"
+
+class HospedajeDetalle(DetailView):
+   model= hospedaje
+   template_name="hospedaje_detalle.html"
+
+class HospedajeCreacion(CreateView):
+   model= hospedaje
+   template_name="hospedaje_form.html"
+   success_url=reverse_lazy("AppCoder:List")
+   fields= ['nombre','HabDispo']
+
+class HospedajeUpdate(DeleteView):
+   model= hospedaje
+   success_url="/AppCoder/hospedaje/list"
+   template_name="hospedaje_form.html"
+   fields= ['nombre','HabDispo']
+
+class HospedajeDelete(DeleteView):
+   model= hospedaje
+   template_name="hospedaje_confirm_delete.html"
+   success_url="/AppCoder/hospedaje/list"

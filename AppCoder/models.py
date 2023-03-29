@@ -6,10 +6,16 @@ class hospedaje(models.Model):
     nombre=models.CharField(max_length=40)
     HabDispo=models.IntegerField()
 
+    def __str__(self):
+        return f"Nombre: {self.nombre} - Habitaciones disponibles: {self.HabDispo}"
+
 class huesped(models.Model):
     nombre= models.CharField(max_length=30)
     apellido= models.CharField(max_length=30)
     email= models.EmailField()
+
+    def __str__(self):
+        return f"Nombre: {self.nombre} - Apellido: {self.apellido} - Email: {self.email}"
 
 class reserva(models.Model):
     nombre=models.CharField(max_length=30)

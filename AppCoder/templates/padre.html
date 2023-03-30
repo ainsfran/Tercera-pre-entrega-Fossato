@@ -19,6 +19,21 @@
         <link href="{% static 'AppCoder/css/styles.css' %}" rel="stylesheet" />  
     </head>
     <body>
+        <!-- mensaje login-->
+
+        {% if mensaje %}
+            <p>{{mensaje}}</p>
+        {% endif %}
+        
+        <!-- Boton buscar alojamiento-->
+
+        <form action="AppCoder/buscar/" method="GET">
+            <p>Realizar busqueda de alojamiento:</p>
+            <input type="text"  name="nombre" id="nombre">
+            <input type="submit" value="Buscar">
+
+        </form>
+
         <!-- Navigation-->
         <nav class="navbar navbar-light bg-light static-top">
             <div class="container">

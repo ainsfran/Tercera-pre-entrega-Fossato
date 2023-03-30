@@ -10,13 +10,13 @@
     
     <h1>Hospedajes en Puerto Iguazu</h1>
     <ul>
-        {% for curso in object_list %}
+        {% for hospedaje in object_list %}
             <li>
-                <p> Nombre: {{ hospedaje.nombre }}</p>
+                <p> Nombre: {{hospedaje.nombre}}</p>
                 <p>
-                    <a href="{% url 'Detail' curso.id %}">Ver</a>
-                    <a href="{% url 'Edit' curso.id %}">Editar</a>
-                    <a href="{% url 'Delete' curso.id %}">Borrar</a>
+                    <a href="{% url 'Detail' hospedaje.id %}">Ver</a>
+                    <a href="{% url 'Edit' hospedaje.id %}">Editar</a>
+                    <a href="{% url 'Delete' hospedaje.id %}">Borrar</a>
                 </p>
             </li>
         {% endfor %}

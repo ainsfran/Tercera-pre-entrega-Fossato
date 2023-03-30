@@ -8,13 +8,45 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import login, logout, authenticate
+from AppCoder.forms import UserRegisterForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+#class ClaseQueNecesitaLogin(LoginRequiredMixin):
+@login_required
+def InicioView(request):
+   return render(request, "inicio.html")
 
 
 
-# Create your views here
+def login_request(request):
+   if request.method == "POST":
+      form= AuthenticationForm(request, data= request.POST)
+      if form.is_valid():
+         usuario= form.cleaned_data.get("username")
+         contras= form.cleaned_data.get("password")
 
-def InicioView (request):
-    return render(request, "inicio.html")
+         user= authenticate(username= usuario, password= contras)
+         if user is not None:
+            login(request,user)
+            return render(request,"inicio.html",{"mensaje":f"Bienvenido/a {usuario}"})
+         else:
+            return render(request,"inicio.html",{"mensaje":f"Error, datos incorrectos"})
+      else:
+         return render(request,"inicio.html",{"mensaje":"Error, formulario erroneo"}) 
+   form= AuthenticationForm()
+   return render(request,"login.html",{"form":form})
+
+
+
+            
+
+
+
+#def InicioView (request):
+ #   return render(request, "inicio.html")
 
 def HospedajeView(request): 
  return render(request,"hospedaje.html")
@@ -99,7 +131,8 @@ def buscar(request):
 
 #CRUD leer
 
-def leerHospedaje(request):
+
+"""def leerHospedaje(request):
    Hospedaje=hospedaje.objects.all()
    contexto = {"hospedaje":Hospedaje}
    return render (request,"leerHospedaje.html",contexto)
@@ -127,30 +160,46 @@ def editarHospedaje(request, hospedaje_nombre):
    else:
       miFormilario= hospedajeFormulario(initial={'nombre': Hospedaje.nombre,'HabDispo': Hospedaje.HabDispo })
       return render(request,'editarHospedaje.html',{'miFormulario':miFormilario, "hospedaje_nombre":hospedaje_nombre} )
-
+"""
 
 class HospedajeList(ListView):
    
    model= hospedaje
-   template_mame = "hospedaje_list.html"
+   template_mame="AppCoder/hospedaje_list.html"
 
 class HospedajeDetalle(DetailView):
    model= hospedaje
-   template_name="hospedaje_detalle.html"
+   template_name="AppCoder/hospedaje_detalle.html"
 
 class HospedajeCreacion(CreateView):
    model= hospedaje
-   template_name="hospedaje_form.html"
-   success_url=reverse_lazy("AppCoder:List")
+   template_name="AppCoder/hospedaje_form.html"
+   success_url=reverse_lazy("hospedaje/list")
    fields= ['nombre','HabDispo']
 
 class HospedajeUpdate(DeleteView):
    model= hospedaje
-   success_url="/AppCoder/hospedaje/list"
-   template_name="hospedaje_form.html"
+   success_url="hospedaje/list"
+   template_name="AppCoder/hospedaje_form.html"
    fields= ['nombre','HabDispo']
 
 class HospedajeDelete(DeleteView):
    model= hospedaje
-   template_name="hospedaje_confirm_delete.html"
-   success_url="/AppCoder/hospedaje/list"
+   template_name="AppCoder/hospedaje_confirm_delete.html"
+   success_url="hospedaje/list"
+
+ #registro
+
+def register(request):
+   if request.method =="POST":
+      #form = UserCreationForm(request.POST)
+      form= UserRegisterForm(request.POST)
+      if form.is_valid():
+         username= form.cleaned_data["username"]
+         form.save()
+         return render(request,"inicio.html", {"mensaje":"Usuario Creado "})
+   else:
+      #form = UserCreationForm()
+      form= UserRegisterForm()
+
+   return render(request,"registro.html",{"form":form})

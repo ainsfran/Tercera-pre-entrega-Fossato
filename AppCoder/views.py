@@ -1,29 +1,29 @@
-from django.shortcuts import render
-from AppCoder.models import hospedaje, huesped, reserva
+
+from django.shortcuts import redirect, render
+from AppCoder.models import hospedaje, huesped, reserva, Avatar
 from django.http import HttpResponse
 from AppCoder.forms import hospedajeFormulario
-from AppCoder.forms import huespedFormulario
+from AppCoder.forms import huespedFormulario, AvatarFormulario
 from AppCoder.forms import reservaFormulario
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout, authenticate
 from AppCoder.forms import UserRegisterForm, UserEditForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.hashers import make_password
-
+from django.contrib.auth.models import User
 
 
 #class ClaseQueNecesitaLogin(LoginRequiredMixin):
 @login_required
 def InicioView(request):
-   return render(request, "inicio.html")
-
-
-
+   avatares = Avatar.objects.filter(user=request.user.id)  
+   return render(request, "inicio.html", {"url":avatares.last().imagen.url})
+ 
 def login_request(request):
    if request.method == "POST":
       form= AuthenticationForm(request, data= request.POST)
@@ -34,7 +34,8 @@ def login_request(request):
          user= authenticate(username= usuario, password= contras)
          if user is not None:
             login(request,user)
-            return render(request,"inicio.html",{"mensaje":f"Bienvenido/a {usuario}"})
+            avatares = Avatar.objects.filter(user=request.user.id)   
+            return render(request,"inicio.html",{"mensaje":f"Bienvenido/a {usuario}","url":avatares.last().imagen.url})
          else:
             return render(request,"inicio.html",{"mensaje":f"Error, datos incorrectos"})
       else:
@@ -51,19 +52,50 @@ def editarPerfil(request):
       if miFormulario.is_valid():
          informacion= miFormulario.cleaned_data
          print(miFormulario)
-         usuario.email= informacion["email"]
-         usuario.first_name= informacion["first_name"]
-         if informacion["password1"]== informacion["password2"]:
-            usuario.password = make_password(informacion["password1"])
+         usuario.email= informacion['email']
+         usuario.first_name= informacion['first_name']
+         if informacion['password1']== informacion['password2']:
+            usuario.password = make_password(informacion['password1'])
             usuario.save()
          else:
-            return render(request, "inicio.html", {"mensaje":"Contraseña incorrecta."})
-         return render(request, "inicio.html")
+            return render(request, 'inicio.html', {'mensaje':'Contraseña incorrecta.'})
+         avatares = Avatar.objects.filter(user=request.user.id)   
+         return render(request, 'inicio.html', {"url":avatares.last().imagen.url})
    else:
-      miFormulario= UserEditForm(initial={"email":usuario.email})
+      miFormulario= UserEditForm(initial={'email':usuario.email})
    return render(request,"editarPerfil.html", {"miFormulario":miFormulario, "usuario": usuario})
 
+#Avatar
+@login_required
+def agregarAvatar(request):
+   user=request.user
+   print(request.method)
+   if request.method == "POST": 
+      miFormulario = AvatarFormulario(request.POST, request.FILES)  
+      if miFormulario.is_valid():   
+         u = User.objects.get(username=user)
+         avatar = Avatar(user=u, imagen=miFormulario.cleaned_data['imagen']) 
+         avatar.save() 
+         return render(request,"agregarAvatar.html",{"mensaje":"Avatar cambiado con exito"})
+ 
+      
+      else: 
+         miFormulario= AvatarFormulario()
+   else:
+      miFormulario= AvatarFormulario()
+   return render(request,"agregarAvatar.html", {"miFormulario":miFormulario})
 
+
+@login_required
+def inicio(request):
+   avatares = Avatar.objects.filter(user=request.user.id)   
+   return render(request, 'AppCoder/inicio.html', {"url":avatares.last().imagen.url})
+
+
+ 
+def urlImagen():
+
+      return "/media/avatares/logo.png"
 
             
 
@@ -212,18 +244,28 @@ class HospedajeDelete(DeleteView):
    template_name="AppCoder/hospedaje_confirm_delete.html"
    success_url="hospedaje/list"
 
- #registro
+#About me
+
+def about(request):
+    return render(request, 'acercaDeMi.html', {})
+
+
+#registro
 
 def register(request):
-   if request.method =="POST":
-      #form = UserCreationForm(request.POST)
+   if request.method =="POST": 
       form= UserRegisterForm(request.POST)
       if form.is_valid():
          username= form.cleaned_data["username"]
          form.save()
          return render(request,"inicio.html", {"mensaje":"Usuario Creado "})
-   else:
-      #form = UserCreationForm()
+   else: 
       form= UserRegisterForm()
 
    return render(request,"registro.html",{"form":form})
+
+
+# 404 
+
+def notFoundView(request, *args, **argv):
+   return render(request, 'not-found.html', {})

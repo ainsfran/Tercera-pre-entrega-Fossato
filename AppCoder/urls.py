@@ -2,6 +2,7 @@ from django.urls import path
 from AppCoder import views
 from django.contrib.auth.views import LogoutView
 
+
 #app_name='AppCoder'
 
 urlpatterns = [
@@ -26,6 +27,7 @@ urlpatterns = [
     path('register',views.register, name='Registro'),
     path('logout',LogoutView.as_view(template_name='logout.html'), name='Logout'),
     path('editarPerfil',views.editarPerfil, name='EditarPerfil'),
-
-
+    path('agregarAvatar', views.agregarAvatar, name="AgregarAvatar"),
+    path('acercaDeMi/', views.about, name='About'),
+    path('not-found', views.notFoundView,name='NotFound')
 ]

@@ -10,12 +10,11 @@
     {% extends "padre.html" %} 
     {% load static %} 
     {% block contenidoQueCambia %} 
-    <h1>Formulario - Editar Perfil</h1>     
-    <h1>De {{usuario}}</h1>
+    <h1> Editar Perfil de {{usuario}}</h1> 
 
-    <form action="" method="POST">{% csrf_token %}
+    <form action="" method="POST" >{% csrf_token %}
         <table>
-            {{mi.Formulario.as_table}}
+            {{miFormulario.as_table}}
         </table>
         <input type="submit", value="Enviar">
 

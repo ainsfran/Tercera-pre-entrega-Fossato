@@ -17,6 +17,10 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'AppCoder/css/styles.css' %}" rel="stylesheet" />  
+        <link href="{% static 'AppCoder/css/custom.css' %}" rel="stylesheet" />  
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
     <body>
         <!-- mensaje login-->
@@ -27,12 +31,7 @@
         
         <!-- Boton buscar alojamiento-->
 
-        <form action="AppCoder/buscar/" method="GET">
-            <p>Realizar busqueda de alojamiento:</p>
-            <input type="text"  name="nombre" id="nombre">
-            <input type="submit" value="Buscar">
 
-        </form>
 
         <!-- Navigation-->
         <nav class="navbar navbar-light bg-light static-top">
@@ -47,12 +46,34 @@
                 {% endif %}
 
                 {% if request.user.is_authenticated %}
-                
-                 <p class="text-muted small mb-4 mb-lg-0">Hola {{user.username}}!!</p>
+
+                <!--
+                <p class="text-muted small mb-4 mb-lg-0">Hola {{user.username}}!!</p>
                 <a href="{% url 'EditarPerfil' %}">Editar Perfil</a>
-                <a href="{% url 'Logout' %}">Cerrar Sesion</a>
+                <a href="{% url 'Logout' %}">Cerrar Sesion</a>-->
+ 
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="{% url 'EditarPerfil' %}">Editar Perfil</a>
+                    <a class="dropdown-item" href="{% url 'AgregarAvatar' %}">Agregar Avatar</a>
+                    <a class="dropdown-item" href="{% url 'Logout' %}">Cerrar Sesion</a>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                        <img height= "30px" src="{{url}}"/> 
+                        {{user.username}} 
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{% url 'EditarPerfil' %}">Editar Perfil</a>
+                        <a class="dropdown-item" href="{% url 'AgregarAvatar' %}">Agregar Avatar</a>
+                        <a class="dropdown-item" href="{% url 'Logout' %}">Cerrar Sesion</a>
+                    </div>
+                </div>
+                
+       
 
                 {% endif %}
+
+
         
             </div>
         </nav>
@@ -72,16 +93,20 @@
             </div>
         </header>
         <!-- modificamos contenido a cambiar-->
-        {% block contenidoQueCambia %}
-
-        {% endblock %}        
+        <div class="dynamic-content text-center">
+            {% block contenidoQueCambia %}
+            
+        {% endblock %}     
+        </div>
+ 
+   
         <!-- Footer-->
         <footer class="footer bg-light">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 h-100 text-center text-lg-start my-auto">
                         <ul class="list-inline mb-2">
-                            <li class="list-inline-item"><a href="#!">About</a></li>
+                            <li class="list-inline-item"><a href="{% url 'About' %}">About</a></li>
                             <li class="list-inline-item">⋅</li>
                             <li class="list-inline-item"><a href="#!">Contact</a></li>
                             <li class="list-inline-item">⋅</li>

@@ -41,7 +41,19 @@
                 <a class="navbar-brand" href="{% url 'Hospedaje' %}">Hospedaje</a>
                 <a class="navbar-brand" href="{% url 'Reserva' %}">Reservas</a>
                 <a class="navbar-brand" href="{% url 'Huesped' %}">Huesped</a>
-                <a class="btn btn-primary" href="#signup">Sign Up</a>
+                {% if not request.user.is_authenticated %}
+                <a class="btn btn-primary" href="{% url 'Login' %}">Iniciar Sesion</a>
+                
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                
+                 <p class="text-muted small mb-4 mb-lg-0">Hola {{user.username}}!!</p>
+                <a href="{% url 'EditarPerfil' %}">Editar Perfil</a>
+                <a href="{% url 'Logout' %}">Cerrar Sesion</a>
+
+                {% endif %}
+        
             </div>
         </nav>
         <!-- Masthead-->

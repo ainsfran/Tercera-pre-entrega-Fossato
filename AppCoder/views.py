@@ -10,9 +10,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout, authenticate
-from AppCoder.forms import UserRegisterForm
+from AppCoder.forms import UserRegisterForm, UserEditForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.hashers import make_password
+
+
 
 #class ClaseQueNecesitaLogin(LoginRequiredMixin):
 @login_required
@@ -38,6 +41,27 @@ def login_request(request):
          return render(request,"inicio.html",{"mensaje":"Error, formulario erroneo"}) 
    form= AuthenticationForm()
    return render(request,"login.html",{"form":form})
+
+@login_required
+def editarPerfil(request):
+   usuario=request.user
+   if request.method == "POST":
+      miFormulario= UserEditForm(request.POST)
+      print(miFormulario)
+      if miFormulario.is_valid():
+         informacion= miFormulario.cleaned_data
+         print(miFormulario)
+         usuario.email= informacion["email"]
+         usuario.first_name= informacion["first_name"]
+         if informacion["password1"]== informacion["password2"]:
+            usuario.password = make_password(informacion["password1"])
+            usuario.save()
+         else:
+            return render(request, "inicio.html", {"mensaje":"Contraseña incorrecta."})
+         return render(request, "inicio.html")
+   else:
+      miFormulario= UserEditForm(initial={"email":usuario.email})
+   return render(request,"editarPerfil.html", {"miFormulario":miFormulario, "usuario": usuario})
 
 
 

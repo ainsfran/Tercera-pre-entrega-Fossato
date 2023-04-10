@@ -18,10 +18,10 @@ class huesped(models.Model):
     def __str__(self):
         return f"Nombre: {self.nombre} - Apellido: {self.apellido} - Email: {self.email}"
 
-class reserva(models.Model):
+"""class reserva(models.Model):
     nombre=models.CharField(max_length=30)
     fechaDeEntrada= models.DateField()
-    pagado= models.BooleanField()
+    pagado= models.BooleanField()"""
 
 class Avatar(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)

@@ -1,10 +1,10 @@
 
 from django.shortcuts import redirect, render
-from AppCoder.models import hospedaje, huesped, reserva, Avatar
+from AppCoder.models import hospedaje, huesped, Avatar
 from django.http import HttpResponse
 from AppCoder.forms import hospedajeFormulario
 from AppCoder.forms import huespedFormulario, AvatarFormulario
-from AppCoder.forms import reservaFormulario
+#from AppCoder.forms import reservaFormulario
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -110,8 +110,8 @@ def HospedajeView(request):
 def HuespedView (request):
     return render(request,"huesped.html")
 
-def ReservaView (request):
-    return render(request,"reserva.html")
+#def ReservaView (request):
+ #   return render(request,"reserva.html")
 
 def busquedaHospedajeView(request):
    return render(request, "busquedaHospedaje.html")
@@ -147,7 +147,7 @@ def HuespedFormulario (request):
     
     return render(request, "huespedFormulario.html", {'miFormulario': miFormulario})
 
-def ReservaFormulario (request):
+"""def ReservaFormulario (request):
     
     form = reservaFormulario(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -160,7 +160,7 @@ def ReservaFormulario (request):
        miFormulario= reservaFormulario()
 
     
-    return render(request, "reservaFormulario.html", {'miFormulario': miFormulario})
+    return render(request, "reservaFormulario.html", {'miFormulario': miFormulario})"""
 
 
 #BUSQUEDA

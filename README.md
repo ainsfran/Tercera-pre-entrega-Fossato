@@ -19,7 +19,7 @@ En dicha página, se puede realizar las siguientes acciones:
 
 Dejamos de forma anexa, las rutas para realizar las acciones antes descriptas:
 - /Inicio de la pag. Contiene barra navegadora
-- /admin accede al panel administrador (usuario: soledad /contraseña: gato1234)
+- /admin accede al panel administrador (usuario: soledad /contraseña: gato12345)
 - /reserva visualizacion con herencia HTLM
 - /husped visualizacion con herencia HTLM
 - /hospedaje visualizacion con herencia HTLM
